@@ -1,0 +1,16 @@
+<!DOCTYPE html><meta charset="utf-8"><title>三体</title>
+<body style="margin:0;background:#000"><canvas id=c></canvas><script>
+const c=document.getElementById('c'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+let B,col=['#f55','#5f5','#59f'];
+function eight(){const p=.97000436,q=-.24308753,u=-.93240737,v=-.86473146;
+B=[[p,q,-u/2,-v/2],[-p,-q,-u/2,-v/2],[0,0,u,v]]}
+function chaos(){B=[0,1,2].map(()=>[Math.random()*2-1,Math.random()*2-1,Math.random()-.5,Math.random()-.5])}
+eight();c.onclick=()=>{chaos();x.clearRect(0,0,c.width,c.height)};
+function acc(){return B.map((a,i)=>{let ax=0,ay=0;B.forEach((b,j)=>{if(i!=j){let dx=b[0]-a[0],dy=b[1]-a[1],r=Math.sqrt(dx*dx+dy*dy+1e-4);ax+=dx/r**3;ay+=dy/r**3}});return[ax,ay]})}
+function step(h){let A=acc();B.forEach((b,i)=>{b[2]+=A[i][0]*h/2;b[3]+=A[i][1]*h/2;b[0]+=b[2]*h;b[1]+=b[3]*h});
+A=acc();B.forEach((b,i)=>{b[2]+=A[i][0]*h/2;b[3]+=A[i][1]*h/2})}
+(function f(){x.fillStyle='rgba(0,0,0,.04)';x.fillRect(0,0,c.width,c.height);
+for(let k=0;k<20;k++)step(.0005);const s=Math.min(c.width,c.height)/3;
+B.forEach((b,i)=>{x.fillStyle=col[i];x.beginPath();x.arc(c.width/2+b[0]*s,c.height/2+b[1]*s,5,0,7);x.fill()});
+requestAnimationFrame(f)})();
+</script>
